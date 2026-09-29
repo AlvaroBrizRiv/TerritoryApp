@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; padding: 0; background: #0D1B2A; }
+        #map { height: 100vh; width: 100vw; }
+        .leaflet-popup-content-wrapper {
+            background-color: #1E2D3D;
+            color: white;
+            border-radius: 12px;
+        }
+        .leaflet-popup-tip { background-color: #1E2D3D; }
+        .popup-btn {
+            background-color: #1565C0;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .my-location-icon {
+            background-color: #42A5F5;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .leaflet-tile-pane {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map = null;
+        let myLocationMarker = null;
+        let layerGroup = null;
+
+        function initGlobalMap(lat, lng, zoom) {
+            if (!map) {
+                map = L.map('map', { zoomControl: false }).setView([lat, lng], zoom);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(map);
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+                layerGroup = L.layerGroup().addTo(map);
+            } else {
+                map.setView([lat, lng], zoom);
+            }
+            if (myLocationMarker) {
+                myLocationMarker.setLatLng([lat, lng]);
+            } else {
+                const icon = L.divIcon({ className: 'my-location-icon', iconSize: [20, 20], iconAnchor: [10, 10] });
+                myLocationMarker = L.marker([lat, lng], { icon: icon }).addTo(map);
+                myLocationMarker.bindPopup("<b>Tu Ubicación</b>");
+            }
+        }
+
+        function addTerritories(jsonString) {
+            if (!map || !layerGroup) return;
+            layerGroup.clearLayers();
+            try {
+                const territories = JSON.parse(jsonString);
+                territories.forEach(t => {
+                    if (t.geom) {
+                        const geoJson = typeof t.geom === 'string' ? JSON.parse(t.geom) : t.geom;
+                        let color = '#42A5F5';
+                        if (t.estado === 'Realizado') color = '#4CAF50';
+                        else if (t.estado === 'En Progreso') color = '#FFC107';
+                        const layer = L.geoJSON(geoJson, {
+                            style: { color: color, weight: 3, opacity: 0.8, fillColor: color, fillOpacity: 0.2 }
+                        });
+                        const popupContent = `
+                            <div style="text-align: center; font-family: sans-serif;">
+                                <h3 style="margin: 0 0 5px 0;">Territorio ${t.numero}</h3>
+                                <p style="margin: 0 0 5px 0; color: #90A4AE; font-size: 12px;">${t.ciudad}</p>
+                                <p style="margin: 0 0 10px 0;"><b>Estado:</b> ${t.estado}<br><b>Direcciones:</b> ${t.totalDirecciones || t.total_direcciones || 0}</p>
+                                <button class="popup-btn" onclick="Android.openTerritory(${t.id})">Abrir Territorio</button>
+                            </div>`;
+                        layer.bindPopup(popupContent);
+                        layer.addTo(layerGroup);
+                    }
+                });
+            } catch (e) { console.error("Error parsing territories: " + e); }
+        }
+    </script>
+</body>
+</html>

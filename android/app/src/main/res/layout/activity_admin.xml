@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/admin_panel"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nueva Dirección"
+            android:textColor="@color/primary_light"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText android:id="@+id/etDirCiudad" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Ciudad"/>
+        <EditText android:id="@+id/etDirAddress" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Dirección"/>
+        <EditText android:id="@+id/etDirDesc" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Descripción"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <EditText android:id="@+id/etDirLat" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="Latitud"/>
+            <EditText android:id="@+id/etDirLng" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="Longitud"/>
+        </LinearLayout>
+        <Button android:id="@+id/btnSaveDir" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/save"/>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calcular Territorios"
+            android:textColor="@color/primary_light"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+            
+        <EditText android:id="@+id/etCalcCiudad" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Ciudad"/>
+        <EditText android:id="@+id/etCalcMax" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Max direcciones" android:inputType="number"/>
+        <Button android:id="@+id/btnCalcular" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/calculate"/>
+        
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="16dp"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gestión de Usuarios"
+            android:textColor="@color/primary_light"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp"/>
+            
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUsuarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+
+    </LinearLayout>
+</ScrollView>

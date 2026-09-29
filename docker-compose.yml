@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgis:
+    image: postgis/postgis:16-3.4
+    container_name: territoryapp_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-territory_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-territory_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-territory_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-territory_user} -d ${POSTGRES_DB:-territory_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: territoryapp_api
+    restart: unless-stopped
+    depends_on:
+      postgis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-territory_user}:${POSTGRES_PASSWORD:-territory_pass}@postgis:5432/${POSTGRES_DB:-territory_db}
+      PORT: 3000
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

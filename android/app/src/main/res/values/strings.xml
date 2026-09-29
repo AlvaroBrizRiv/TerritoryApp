@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">TerritoryApp</string>
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="login_button">Iniciar Sesión</string>
+    <string name="map_title">Mapa de Territorios</string>
+    <string name="admin_panel">Panel Admin</string>
+    <string name="logout">Salir</string>
+    <string name="view_map">Ver Mapa</string>
+    <string name="checklist">Checklist</string>
+    <string name="mark_completed">Marcar como Completado</string>
+    <string name="save">Guardar</string>
+    <string name="calculate">Calcular</string>
+    <string name="create">Crear</string>
+</resources>

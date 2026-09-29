@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TerritoryApp Map</title>
+    <link href="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0D1B2A; }
+        #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; }
+        .maplibregl-popup-content { background: #1E2D3D; color: #ECEFF1; border-radius: 10px; padding: 12px 16px; font-family: sans-serif; box-shadow: 0 4px 16px rgba(0,0,0,0.5); max-width: 220px; }
+        .maplibregl-popup-close-button { color: #90A4AE; font-size: 18px; }
+        .popup-address { font-size: 14px; font-weight: bold; color: #ECEFF1; margin-bottom: 4px; }
+        .popup-desc { font-size: 12px; color: #90A4AE; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/maplibre-gl@4.5.0/dist/maplibre-gl.js"></script>
+    <script>
+        let map;
+        let markers = [];
+        function initMap(lat, lng, zoom) {
+            if (map) { map.remove(); }
+            map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/liberty', center: [lng || 0, lat || 0], zoom: zoom || 13, attributionControl: false });
+            map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+            map.addControl(new maplibregl.AttributionControl({ compact: true }));
+        }
+        function addMarkers(jsonStr) {
+            if (!map) return;
+            markers.forEach(m => m.remove());
+            markers = [];
+            let data;
+            try { data = JSON.parse(jsonStr); } catch (e) { console.error('Invalid JSON', e); return; }
+            if (!data || data.length === 0) return;
+            const bounds = new maplibregl.LngLatBounds();
+            data.forEach((d, idx) => {
+                if (typeof d.lat !== 'number' || typeof d.lng !== 'number') return;
+                const el = document.createElement('div');
+                el.style.cssText = 'width:36px;height:36px;border-radius:50%;background:#1565C0;border:3px solid white;box-shadow:0 2px 10px rgba(0,0,0,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold;color:white;font-family:sans-serif';
+                el.textContent = String(idx + 1);
+                const popupHtml = `<div class="popup-address">${d.direccion || ''}</div>${d.descripcion ? `<div class="popup-desc">${d.descripcion}</div>` : ''}`;
+                const marker = new maplibregl.Marker({ element: el }).setLngLat([d.lng, d.lat]).setPopup(new maplibregl.Popup({ offset: 20, closeButton: true }).setHTML(popupHtml)).addTo(map);
+                markers.push(marker);
+                bounds.extend([d.lng, d.lat]);
+            });
+            if (markers.length > 0) { map.fitBounds(bounds, { padding: { top: 60, bottom: 60, left: 40, right: 40 }, maxZoom: 16, duration: 600 }); }
+        }
+        function clearMarkers() { markers.forEach(m => m.remove()); markers = []; }
+    </script>
+</body>
+</html>
