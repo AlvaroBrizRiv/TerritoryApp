@@ -1,7 +1,3 @@
-Aquí tienes una propuesta estructurada, dinámica y visual para tu archivo `README.md`.
-
----
-
 # 🗺️ TerritoryApp
 
 ## 📖 Resumen
