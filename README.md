@@ -1,3 +1,5 @@
+APP EN DESARROLLO (ALGUNAS COSAS PUEDEN CAMBIAR CON EL TIEMPO)
+
 # 🗺️ TerritoryApp
 
 ## 📖 Resumen
